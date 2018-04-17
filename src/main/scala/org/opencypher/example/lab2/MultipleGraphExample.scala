@@ -38,21 +38,21 @@ import org.opencypher.spark.api.io.file.FileCsvGraphDataSource
   */
 object MultipleGraphExample extends App {
   // Create CAPS session
-  implicit val caps: CAPSSession = CAPSSession.local()
+  implicit val session: CAPSSession = CAPSSession.local()
 
   // Load social network data via case class instances
-  val socialNetwork = caps.readFrom(SocialNetworkData.persons, SocialNetworkData.friendships)
-  caps.store("socialNetwork", socialNetwork)
+  val socialNetwork = session.readFrom(SocialNetworkData.persons, SocialNetworkData.friendships)
+  session.store("socialNetwork", socialNetwork)
 
   // Register a File-based data source in the Cypher session
   val csvFolder = getClass.getResource("/csv").getFile
   // Note: if files were stored in HDFS, change the data source to HdfsCsvPropertyGraphDataSource
-  caps.registerSource(Namespace("csv"), FileCsvGraphDataSource(rootPath = csvFolder))
+  session.registerSource(Namespace("csv"), FileCsvGraphDataSource(rootPath = csvFolder))
   // access the graph via its qualified graph name
-  val purchaseNetwork = caps.graph("csv.products")
+  val purchaseNetwork = session.graph("csv.products")
 
   // 5) Create new edges between users and customers with the same name
-  val recommendationGraph = caps.cypher(
+  val recommendationGraph = session.cypher(
     """|FROM GRAPH socialNetwork
        |MATCH (p:Person)
        |FROM GRAPH csv.products
