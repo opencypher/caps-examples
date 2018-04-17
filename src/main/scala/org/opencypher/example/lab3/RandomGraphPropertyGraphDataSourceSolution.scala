@@ -31,7 +31,7 @@ import scala.util.{Success, Try}
   * @param connectionProbability threshold probability used to check if two nodes are connected
   * @param caps CAPS session
   */
-class RandomGraphGenerator(val connectionProbability: Double)(implicit val caps: CAPSSession) {
+class RandomGraphGeneratorSolution(val connectionProbability: Double)(implicit val caps: CAPSSession) {
 
   val spark: SparkSession = caps.sparkSession
   import spark.implicits._
@@ -79,7 +79,7 @@ class RandomGraphGenerator(val connectionProbability: Double)(implicit val caps:
   * @param generator an instance of the random graph generator
   * @param caps CAPS session
   */
-case class RandomPropertyGraphDataSource(generator: RandomGraphGenerator)(implicit val caps: CAPSSession) extends PropertyGraphDataSource {
+case class RandomPropertyGraphDataSourceSolution(generator: RandomGraphGeneratorSolution)(implicit val caps: CAPSSession) extends PropertyGraphDataSource {
   /**
     * Returns `true` if the data source stores a graph under the given [[org.opencypher.okapi.api.graph.GraphName]].
     *
@@ -164,12 +164,12 @@ case class RandomPropertyGraphDataSource(generator: RandomGraphGenerator)(implic
   override def graphNames: Set[GraphName] = ???
 }
 
-object TestApp extends App {
+object TestAppSolution extends App {
 
   implicit val caps = CAPSSession.local()
 
-  val generator = new RandomGraphGenerator(0.5)
-  val dataSource = RandomPropertyGraphDataSource(generator)
+  val generator = new RandomGraphGeneratorSolution(0.5)
+  val dataSource = RandomPropertyGraphDataSourceSolution(generator)
 
   caps.registerSource(Namespace("random"), dataSource)
 
