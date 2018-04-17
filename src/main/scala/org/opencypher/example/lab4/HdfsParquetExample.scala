@@ -25,6 +25,9 @@ object HdfsParquetExample extends App {
       |MATCH (officer:Officer)-[:IS_A]->(:Race {name:'Klingon'}
       |      (officer)-[:SERVED_ON]->(ship:Starship)
       |      (ship)-[:TYPE_OF]->(:Class {class: 'Galaxy Class'})
-      |RETURN ship.designation, COUNT(officer) as klingonCount, collect(officer.name) as klingons
+      |RETURN
+      |      ship.designation,
+      |      COUNT(officer) as klingonCount,
+      |      collect(officer.name) as klingons
     """.stripMargin)
 }
