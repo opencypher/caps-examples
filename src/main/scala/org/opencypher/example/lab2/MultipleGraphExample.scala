@@ -24,31 +24,55 @@
  * described as "implementation extensions to Cypher" or as "proposed changes to
  * Cypher that are not yet approved by the openCypher community".
  */
-package org.opencypher.example.lab1
+package org.opencypher.example.lab2
 
+import org.opencypher.okapi.api.graph.Namespace
 import org.opencypher.spark.api.CAPSSession
 import org.opencypher.spark.api.io.{Node, Relationship, RelationshipType}
+import org.opencypher.spark.api.io.file.FileCsvGraphDataSource
 
 /**
-  * Demonstrates basic usage of the CAPS API by loading an example network via Scala case classes and running a Cypher
-  * query on it.
+  * Demonstrates multiple graph capabilities by loading a social network from case class objects and a purchase network
+  * from CSV data and schema files. The example connects both networks via matching user and customer names. A Cypher
+  * query is then used to compute products that friends have bought.
   */
-object CaseClassExample extends App {
-
-  // 1) Create CAPS session
+object MultipleGraphExample extends App {
+  // Create CAPS session
   implicit val session: CAPSSession = CAPSSession.local()
 
-  // 2) Load social network data via case class instances
+  // Load social network data via case class instances
   val socialNetwork = session.readFrom(SocialNetworkData.persons, SocialNetworkData.friendships)
+  session.store("socialNetwork", socialNetwork)
 
-  // 3) Query graph with Cypher
-  val results = socialNetwork.cypher(
-    """|MATCH (a:Person)-[r:FRIEND_OF]->(b)
-       |RETURN a.name, b.name, r.since""".stripMargin
-  )
+  // Register a File-based data source in the Cypher session
+  val csvFolder = getClass.getResource("/csv").getFile
+  // Note: if files were stored in HDFS, change the data source to HdfsCsvPropertyGraphDataSource
+  session.registerSource(Namespace("csv"), FileCsvGraphDataSource(rootPath = csvFolder))
+  // access the graph via its qualified graph name
+  val purchaseNetwork = session.graph("csv.products")
 
-  // 4) Convert to maps and print to console
-  println(results.getRecords.collect.mkString("\n"))
+  // 5) Create new edges between users and customers with the same name
+  val recommendationGraph = session.cypher(
+    """|FROM GRAPH socialNetwork
+       |MATCH (p:Person)
+       |FROM GRAPH csv.products
+       |MATCH (c:Customer)
+       |WHERE p.name = c.name
+       |CONSTRUCT ON socialNetwork, csv.products
+       |  NEW (p)-[:IS]->(c)
+       |RETURN GRAPH
+    """.stripMargin
+  ).getGraph
+
+  // Query for product recommendations
+  val recommendations = recommendationGraph.cypher(
+    """|MATCH (person:Person)-[:FRIEND_OF]-(friend:Person),
+       |      (friend)-[:IS]->(customer:Customer),
+       |      (customer)-[:BOUGHT]->(product:Product)
+       |RETURN DISTINCT product.title AS recommendation, person.name AS for
+    """.stripMargin)
+
+  recommendations.show
 }
 
 /**

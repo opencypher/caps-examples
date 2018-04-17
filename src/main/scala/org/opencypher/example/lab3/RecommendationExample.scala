@@ -111,8 +111,8 @@ object RecommendationExample extends App {
   recommendationTable.show
 
   // Shutdown Neo4j test instance
-  neo4jServerUS.stop()
-  neo4jServerEU.stop()
+  neo4jServerUS.close()
+  neo4jServerEU.close()
 
 
   def socialNetworkUS =
