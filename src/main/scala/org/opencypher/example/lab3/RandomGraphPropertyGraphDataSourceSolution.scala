@@ -86,7 +86,14 @@ case class RandomPropertyGraphDataSource(generator: RandomGraphGenerator)(implic
     * @param name name of the graph within the data source
     * @return `true`, iff the graph is stored within the data source
     */
-  override def hasGraph(name: GraphName): Boolean = ???
+  override def hasGraph(name: GraphName): Boolean = {
+    val stripped = name.value.replaceAll("size","")
+
+    Try(stripped) match {
+      case Success(v) => true
+      case _ => false
+    }
+  }
 
   /**
     * Returns the [[org.opencypher.okapi.api.graph.PropertyGraph]] that is stored under the given name.
@@ -94,8 +101,28 @@ case class RandomPropertyGraphDataSource(generator: RandomGraphGenerator)(implic
     * @param name name of the graph within the data source
     * @return property graph
     */
-  override def graph(name: GraphName): PropertyGraph = ???
+  override def graph(name: GraphName): PropertyGraph = {
+    val (nodeDF, relDF) = generator.generate(name.value.replaceAll("size","").toLong)
 
+    val nodeMapping = NodeMapping
+      .withSourceIdKey("id")
+      .withImpliedLabel("Node")
+      .withPropertyKey("longProperty")
+      .withPropertyKey("stringProperty")
+
+    val nodes = CAPSNodeTable(nodeMapping, nodeDF)
+
+    val relMapping = RelationshipMapping
+      .withSourceIdKey("id")
+      .withSourceStartNodeKey("src")
+      .withSourceEndNodeKey("tgt")
+      .withRelType("REL")
+      .withPropertyKey("probability")
+
+    val rels = CAPSRelationshipTable(relMapping, relDF)
+
+    caps.readFrom(nodes, rels)
+  }
   /**
     * Returns the [[org.opencypher.okapi.api.schema.Schema]] of the graph that is stored under the given name.
     *
@@ -106,8 +133,13 @@ case class RandomPropertyGraphDataSource(generator: RandomGraphGenerator)(implic
     * @param name name of the graph within the data source
     * @return graph schema
     */
-  override def schema(name: GraphName): Option[Schema] = ???
+  override def schema(name: GraphName): Option[Schema] = {
+    val schema = CAPSSchema.empty
+      .withNodePropertyKeys("Node")("longProperty" -> CTInteger, "stringProperty" -> CTString)
+      .withRelationshipPropertyKeys("REL")("probability" -> CTFloat)
 
+    Some(schema)
+  }
   /**
     * Stores the given [[org.opencypher.okapi.api.graph.PropertyGraph]] under the given [[org.opencypher.okapi.api.graph.GraphName]] within the data source.
     *
@@ -118,14 +150,12 @@ case class RandomPropertyGraphDataSource(generator: RandomGraphGenerator)(implic
     name: GraphName,
     graph: PropertyGraph
   ): Unit = throw NotImplementedException("Store is not implemented for Random Graph Data Source")
-
   /**
     * Deletes the [[org.opencypher.okapi.api.graph.PropertyGraph]] within the data source that is stored under the given [[org.opencypher.okapi.api.graph.GraphName]].
     *
     * @param name name under which the graph is stored
     */
   override def delete(name: GraphName): Unit = throw NotImplementedException("Delete is not implemented for Random Graph Data Source")
-
   /**
     * Returns the [[org.opencypher.okapi.api.graph.GraphName]]s of all [[org.opencypher.okapi.api.graph.PropertyGraph]]s stored within the data source.
     *
@@ -136,7 +166,7 @@ case class RandomPropertyGraphDataSource(generator: RandomGraphGenerator)(implic
 
 object TestApp extends App {
 
-  implicit val caps: CAPSSession = CAPSSession.local()
+  implicit val caps = CAPSSession.local()
 
   val generator = new RandomGraphGenerator(0.5)
   val dataSource = RandomPropertyGraphDataSource(generator)
