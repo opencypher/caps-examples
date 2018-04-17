@@ -51,23 +51,14 @@ object MultipleGraphExample extends App {
   // access the graph via its qualified graph name
   val purchaseNetwork = caps.graph("csv.products")
 
-  // Create union of social network and product/pruchases graphs
-  caps.cypher(
-    s"""|CREATE GRAPH snProductUnion {
-        |  FROM GRAPH socialNetwork
-        |  RETURN GRAPH
-        |  UNION ALL
-        |  FROM GRAPH csv.products
-        |  RETURN GRAPH
-        |}
-      """.stripMargin)
-
-  // Create new edges between users and customers with the same name
+  // 5) Create new edges between users and customers with the same name
   val recommendationGraph = caps.cypher(
-    """|FROM GRAPH snProductUnion
-       |MATCH (p:Person), (c:Customer)
+    """|FROM GRAPH socialNetwork
+       |MATCH (p:Person)
+       |FROM GRAPH csv.products
+       |MATCH (c:Customer)
        |WHERE p.name = c.name
-       |CONSTRUCT ON snProductUnion
+       |CONSTRUCT ON socialNetwork, csv.products
        |  NEW (p)-[:IS]->(c)
        |RETURN GRAPH
     """.stripMargin
