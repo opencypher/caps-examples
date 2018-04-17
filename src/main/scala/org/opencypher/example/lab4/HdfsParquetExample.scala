@@ -22,7 +22,9 @@ object HdfsParquetExample extends App {
   caps.cypher(
     """
       |FROM GRAPH hdfs.start_trek
-      |MATCH (n)
-      |RETURN n
+      |MATCH (officer:Officer)-[:IS_A]->(:Race {name:'Klingon'}
+      |      (officer)-[:SERVED_ON]->(ship:Starship)
+      |      (ship)-[:TYPE_OF]->(:Class {class: 'Galaxy Class'})
+      |RETURN ship.designation, COUNT(officer) as klingonCount, collect(officer.name) as klingons
     """.stripMargin)
 }
