@@ -26,7 +26,8 @@
  */
 package org.opencypher.example.lab2
 
-import org.opencypher.example.lab2.Neo4jHelpers._
+import org.opencypher.example.utils.Neo4jHelpers
+import org.opencypher.example.utils.Neo4jHelpers._
 import org.opencypher.okapi.api.graph.Namespace
 import org.opencypher.spark.api.CAPSSession
 import org.opencypher.spark.api.io.neo4j.CommunityNeo4jGraphDataSource
@@ -49,7 +50,7 @@ object MultipleGraphLab extends App {
         |CREATE (b)-[:FRIEND_OF { since: '12/12/2009' }]->(c)""".stripMargin
 
   // Start a Neo4j instance and populate it with social network data
-  val neo4j = Neo4jHelpers.startNeo4jHarness(dataFixture = socialNetworkFixture)
+  val neo4j = Neo4jHelpers.startNeo4j(dataFixture = socialNetworkFixture)
 
   // Register Graph Data Sources (GDS)
   session.registerSource(
