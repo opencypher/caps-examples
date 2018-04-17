@@ -28,10 +28,19 @@ package org.opencypher.example
 
 import org.scalatest._
 
-class HelloCypherTest extends FunSpec {
+class HelloCypherTest extends FunSpec with Matchers {
 
-  it("run the example program") {
-    HelloCypher.main(Array())
+  it("runs the example program") {
+    val stream = new java.io.ByteArrayOutputStream()
+    Console.withOut(stream) {
+      HelloCypher.main(Array())
+    }
+    val printed = stream.toString
+
+    printed should equal(
+      """|Map(a.name -> Alice, b.name -> Bob, r.since -> 23/01/1987)
+         |Map(a.name -> Bob, b.name -> Carol, r.since -> 12/12/2009)
+         |""".stripMargin)
   }
 
 }
