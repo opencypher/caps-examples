@@ -58,4 +58,11 @@ object GraphXLab extends App {
 
   // 5) Compute Page Rank via GraphX
   val graph = Graph(graphXNodeRDD, graphXRelRDD)
+
+  /**
+    * Lab challenge:
+    *  - use the GraphX graph to run different graph algorithms
+    *  - collect the algorithm output and use it for further SQL or Cypher queries
+    *     - e.g. incorporate it into a new graph
+    */
 }
