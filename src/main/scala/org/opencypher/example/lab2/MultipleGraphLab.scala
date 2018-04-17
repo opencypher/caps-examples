@@ -61,12 +61,25 @@ object MultipleGraphLab extends App {
 
   socialNetwork.cypher("MATCH (n) RETURN n").getRecords.show
 
-  // Lab challenge:
-  //  - Install Desktop, use Browser to set up
-  //  - Load multiple graphs from Neo4j instances
-  //  - Use the new Cypher features to play around with querying across
-  //    multiple graphs and creating new graphs that connect them
-
-  // Shutdown Neo4j test instance
+  // Shutdown Neo4j harness instance
   neo4j.close()
+
+  /**
+    * Lab challenge:
+    *  - Install Neo4j Desktop, use the browser to set up some example data
+    *  - Replace the Neo4j harness setup code above with a config for a real Neo4j DB,
+    *    use the commented out code below as a guide
+    *  - Load multiple graphs from different Neo4j instances
+    *  - Use the new Cypher features to play around with querying across
+    *    multiple graphs and creating new graphs that connect them
+    */
+
+  //   Below is commented out example setup code for Neo4j Desktop
+  //   Load a graph from a running Neo4j instance. Setup with Neo4j Desktop from https://neo4j.com/download/
+
+  //   Remove the next line and set/store the PW property separately from the application source code.
+  //   System.setProperty("neo4j-pw", "example-pw") // Remove: Do not store passwords in code, set them externally instead.
+  //   val neo4jPw = System.getProperty("neo4j-pw")
+  //   implicit val neo4jConfig = Neo4jConfig(uri = URI.create("bolt://localhost"), password = Some(neo4jPw))
+  //   val neo4jSource = new Neo4jPropertyGraphDataSource(neo4jConfig)
 }
