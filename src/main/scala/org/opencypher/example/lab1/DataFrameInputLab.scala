@@ -35,7 +35,7 @@ import org.opencypher.spark.api.io.{CAPSNodeTable, CAPSRelationshipTable}
   * Demonstrates basic usage of the CAPS API by loading an example network from existing [[DataFrame]]s and
   * running a Cypher query on it.
   */
-object DataFrameInputExample extends App {
+object DataFrameInputLab extends App {
   // 1) Create CAPS session and retrieve Spark session
   implicit val session: CAPSSession = CAPSSession.local()
   val spark = session.sparkSession
