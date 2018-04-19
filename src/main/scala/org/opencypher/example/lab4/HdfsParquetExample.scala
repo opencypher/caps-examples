@@ -13,7 +13,7 @@ object HdfsParquetExample extends App {
   val hdfsConfig = new Configuration()
   implicit val hdfs: FileSystem = FileSystem.get(hdfsConfig)
 
-  val hdfsPath = new Path("hdfs://xxx/xxx")
+  val hdfsPath = new Path("hdfs://35.178.58.187//")
 
   val dataSource = new HdfsParquetGraphSource(hdfsPath)
 
@@ -21,9 +21,9 @@ object HdfsParquetExample extends App {
 
   caps.cypher(
     """
-      |FROM GRAPH hdfs.start_trek
-      |MATCH (officer:Officer)-[:IS_A]->(:Race {name:'Klingon'}
-      |      (officer)-[:SERVED_ON]->(ship:Starship)
+      |FROM GRAPH hdfs.star_trek
+      |MATCH (officer:Officer)-[:IS_A]->(:Race {name:'Klingon'}),
+      |      (officer)-[:SERVED_ON]->(ship:Starship),
       |      (ship)-[:TYPE_OF]->(:Class {class: 'Galaxy Class'})
       |RETURN
       |      ship.designation,
