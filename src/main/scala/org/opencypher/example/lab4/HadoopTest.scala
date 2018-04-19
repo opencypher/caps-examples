@@ -1,4 +1,4 @@
-package org.neo4j.hdfs.parquet
+package org.opencypher.example.lab4
 
 import com.sksamuel.exts.Logging
 import org.apache.hadoop.conf.Configuration
@@ -6,6 +6,7 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import org.neo4j.harness.{ServerControls, TestServerBuilders}
+import org.neo4j.hdfs.parquet.HdfsParquetGraphSource
 import org.opencypher.okapi.api.graph.GraphName
 import org.opencypher.okapi.impl.util.PrintOptions
 import org.opencypher.spark.api.CAPSSession
@@ -15,8 +16,8 @@ import org.opencypher.spark.impl.io.neo4j.Neo4jGraphLoader
 
 object HadoopTest extends App {
 
-  implicit val configuration = new Configuration()
-  implicit val fs = FileSystem.get(configuration)
+  implicit val configuration: Configuration = new Configuration()
+  implicit val fs: FileSystem = FileSystem.get(configuration)
 
   // ----------------------------
   // Create a local spark session
@@ -24,7 +25,7 @@ object HadoopTest extends App {
   val conf = new SparkConf(true)
   conf.set("spark.driver.allowMultipleContexts", "true")
   conf.set("spark.sql.caseSensitive", "false") // Option required for spark case insensitivity
-  implicit val sparkSession = SparkSession
+  implicit val sparkSession: SparkSession = SparkSession
     .builder()
     .config(conf)
     .master("local[*]")
@@ -35,7 +36,7 @@ object HadoopTest extends App {
   // -----------------------------------------------------------------------
   // Create a local CAPS session which implicitly includes the spark session
   // -----------------------------------------------------------------------
-  implicit val caps: CAPSSession = CAPSSession.local()
+  implicit val caps: CAPSSession = CAPSSession.create()(sparkSession)
 
   // ------------------------------------------------------
   // NEO embedded Server with data loaded via Cypher CREATE
