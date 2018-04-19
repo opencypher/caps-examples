@@ -14,7 +14,7 @@ import org.opencypher.spark.api.io.neo4j.Neo4jConfig
 import org.opencypher.spark.impl.CAPSGraph
 import org.opencypher.spark.impl.io.neo4j.Neo4jGraphLoader
 
-object HadoopTest extends App {
+object HadoopParquetTest extends App {
 
   implicit val configuration: Configuration = new Configuration()
   implicit val fs: FileSystem = FileSystem.get(configuration)
