@@ -29,7 +29,7 @@ package org.opencypher.example.lab2
 import org.opencypher.okapi.api.graph.Namespace
 import org.opencypher.spark.api.CAPSSession
 import org.opencypher.spark.api.io.{Node, Relationship, RelationshipType}
-import org.opencypher.spark.api.io.file.FileCsvGraphDataSource
+import org.opencypher.spark.api.io.csv.file.FileCsvGraphDataSource
 
 /**
   * Demonstrates multiple graph capabilities by loading a social network from case class objects and a purchase network
@@ -42,14 +42,14 @@ object MultipleGraphExample extends App {
 
   // Load social network data via case class instances
   val socialNetwork = session.readFrom(SocialNetworkData.persons, SocialNetworkData.friendships)
-  session.store("socialNetwork", socialNetwork)
+  session.catalog.store("socialNetwork", socialNetwork)
 
   // Register a File-based data source in the Cypher session
   val csvFolder = getClass.getResource("/csv").getFile
   // Note: if files were stored in HDFS, change the data source to HdfsCsvPropertyGraphDataSource
   session.registerSource(Namespace("csv"), FileCsvGraphDataSource(rootPath = csvFolder))
   // access the graph via its qualified graph name
-  val purchaseNetwork = session.graph("csv.products")
+  val purchaseNetwork = session.catalog.graph("csv.products")
 
   // 5) Create new edges between users and customers with the same name
   val recommendationGraph = session.cypher(

@@ -20,7 +20,7 @@
     <scala.binary.version>2.11</scala.binary.version>
     <scala.version>2.11.12</scala.version>
 
-    <dep.caps.version>1.0.0-beta2</dep.caps.version>
+    <dep.caps.version>1.0.0-beta7</dep.caps.version>
     <dep.neo4j.harness.version>3.3.3</dep.neo4j.harness.version>
     <dep.scalatest.version>3.0.5</dep.scalatest.version>
   </properties>
