@@ -36,7 +36,7 @@ object HadoopParquetTest extends App {
   // -----------------------------------------------------------------------
   // Create a local CAPS session which implicitly includes the spark session
   // -----------------------------------------------------------------------
-  implicit val caps: CAPSSession = CAPSSession.create()(sparkSession)
+  implicit val caps: CAPSSession = CAPSSession.create(sparkSession)
 
   // ------------------------------------------------------
   // NEO embedded Server with data loaded via Cypher CREATE
@@ -77,7 +77,7 @@ object HadoopParquetTest extends App {
   // ----------------------------------------------
   // Perform CYPHER query on the HDFS Parquet Graph
   // ----------------------------------------------
-  val printOptions = PrintOptions(stream = Console.out, columnWidth = 100, margin = 2)
+  val printOptions = PrintOptions(stream = Console.out, 100)
   hdfsParquetGraphSource
     .graph(graphName)
     .cypher("match(n) return n")

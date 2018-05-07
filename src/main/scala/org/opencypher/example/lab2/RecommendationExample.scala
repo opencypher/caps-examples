@@ -30,7 +30,7 @@ import org.neo4j.harness.ServerControls
 import org.opencypher.example.utils.Neo4jHelpers._
 import org.opencypher.okapi.api.graph.Namespace
 import org.opencypher.spark.api.CAPSSession
-import org.opencypher.spark.api.io.file.FileCsvGraphDataSource
+import org.opencypher.spark.api.io.csv.file.FileCsvGraphDataSource
 import org.opencypher.spark.api.io.neo4j.CommunityNeo4jGraphDataSource
 
 /**
@@ -80,7 +80,7 @@ object RecommendationExample extends App {
   val euFriends = caps.cypher(cityFriendsQuery("euSocialNetwork.graph")).getGraph
 
   // Union the US and EU graphs into a single graph 'allFriends' and store it in the session
-  caps.store("allFriends", usFriends.unionAll(euFriends))
+  caps.catalog.store("allFriends", usFriends.unionAll(euFriends))
 
   // Connect the social network with the products network using equal person and customer emails
   val connectedCustomers = caps.cypher(

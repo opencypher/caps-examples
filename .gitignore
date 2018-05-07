@@ -4,3 +4,5 @@
 *.iml
 /target/**
 /data/**
+metastore_db
+.DS_Store

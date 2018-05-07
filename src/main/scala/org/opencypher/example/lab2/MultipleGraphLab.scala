@@ -58,7 +58,7 @@ object MultipleGraphLab extends App {
     CommunityNeo4jGraphDataSource(neo4j.dataSourceConfig))
 
   // Access the graph via its qualified graph name
-  val socialNetwork = session.graph("socialNetwork.graph")
+  val socialNetwork = session.catalog.graph("socialNetwork.graph")
 
   socialNetwork.cypher("MATCH (n) RETURN n").getRecords.show
 
