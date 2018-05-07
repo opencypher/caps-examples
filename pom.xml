@@ -34,13 +34,11 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+
     <repository>
-      <id>opencypher-private</id>
-      <name>neo-snapshots</name>
-      <url>https://neo.jfrog.io/neo/opencypher</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
+      <id>morpheus-releases</id>
+      <name>Morpheus private release repository</name>
+      <url>https://neo.jfrog.io/neo/morpheus-release</url>
     </repository>
   </repositories>
 
@@ -72,8 +70,8 @@
 
     <dependency>
       <groupId>org.neo4j</groupId>
-      <artifactId>neo4j-parquet-graph-source</artifactId>
-      <version>1.0.0-beta2-SNAPSHOT</version>
+      <artifactId>morpheus-bundle</artifactId>
+      <version>1.0.0-beta2</version>
     </dependency>
 
     <dependency>
