@@ -20,7 +20,7 @@
     <scala.binary.version>2.11</scala.binary.version>
     <scala.version>2.11.12</scala.version>
 
-    <dep.caps.version>1.0.0-beta4</dep.caps.version>
+    <dep.caps.version>0.1.6</dep.caps.version>
     <dep.scalatest.version>3.0.5</dep.scalatest.version>
   </properties>
 
